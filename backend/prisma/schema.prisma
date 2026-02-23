@@ -16,9 +16,13 @@ model User {
   password         String
   name             String?
   pushNotifications Boolean  @default(true)
+  trustScore       Int      @default(0) // New: User reliability score
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   pets             Pet[]
+  communityAlerts  CommunityAlert[]
+  communityComments CommunityComment[]
+  verifications    Verification[]
 }
 
 model Pet {
@@ -67,4 +71,43 @@ model Spot {
   rating      Float?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model CommunityAlert {
+  id          String   @id @default(cuid())
+  type        String   // "DANGER" (poison), "EVENT" (gathering), "INFO" (new park)
+  title       String
+  description String?
+  latitude    Float
+  longitude   Float
+  severity    Int      @default(1) // 1 to 5 scale
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  verifications Verification[]
+  comments      CommunityComment[]
+  expiresAt     DateTime? // Alerts for danger can expire
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CommunityComment {
+  id        String   @id @default(cuid())
+  text      String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  alertId   String
+  alert     CommunityAlert @relation(fields: [alertId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Verification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  alertId   String
+  alert     CommunityAlert @relation(fields: [alertId], references: [id])
+  isValid   Boolean  @default(true) // User can also report fake alerts
+  createdAt DateTime @default(now())
+
+  @@unique([userId, alertId])
 }
