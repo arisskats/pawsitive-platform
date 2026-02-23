@@ -6,12 +6,14 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { FoodAnalysisService } from './food-analysis.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 const uploadsPath = join(process.cwd(), 'uploads');
 
@@ -23,6 +25,7 @@ if (!existsSync(uploadsPath)) {
 export class FoodAnalysisController {
   constructor(private readonly foodAnalysisService: FoodAnalysisService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post(':petId')
   @UseInterceptors(
     FileInterceptor('image', {

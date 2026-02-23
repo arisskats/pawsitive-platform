@@ -1,15 +1,16 @@
-import { Controller, Get, Post, Body, Param, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { CommunityService } from './community.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('community')
 export class CommunityController {
   constructor(private readonly communityService: CommunityService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('alerts')
-  create(@Headers('x-user-id') userId: string, @Body() dto: CreateAlertDto) {
-    // For now we get userId from headers since auth is not fully implemented
-    return this.communityService.createAlert(userId, dto);
+  create(@Request() req: any, @Body() dto: CreateAlertDto) {
+    return this.communityService.createAlert(req.user.userId, dto);
   }
 
   @Get('alerts')
@@ -17,8 +18,9 @@ export class CommunityController {
     return this.communityService.findAllAlerts();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('alerts/:id/verify')
-  verify(@Headers('x-user-id') userId: string, @Param('id') alertId: string) {
-    return this.communityService.verifyAlert(userId, alertId);
+  verify(@Request() req: any, @Param('id') alertId: string) {
+    return this.communityService.verifyAlert(req.user.userId, alertId);
   }
 }

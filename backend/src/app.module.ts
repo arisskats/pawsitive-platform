@@ -7,6 +7,7 @@ import { PetsModule } from './pets/pets.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SpotsModule } from './spots/spots.module';
 import { CommunityModule } from './community/community.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CommunityModule } from './community/community.module';
     SpotsModule,
     FoodAnalysisModule,
     CommunityModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
