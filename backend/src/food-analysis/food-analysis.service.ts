@@ -14,6 +14,8 @@ type FoodAnalysisResult = {
   harmfulAdditives: string[];
   healthRating: number;
   summary: string;
+  confidenceScore: number;
+  toxicAlert: boolean;
 };
 
 @Injectable()
@@ -38,8 +40,10 @@ export class FoodAnalysisService {
     const model = client.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
     const prompt =
       'Analyze this pet food label image and return strict JSON only. ' +
-      'Schema: {"ingredients": string[], "harmfulAdditives": string[], "healthRating": number (1-10), "summary": string}. ' +
-      'Use concise ingredient names, identify risky additives for pets, and give a short practical summary.';
+      'Schema: {"ingredients": string[], "harmfulAdditives": string[], "healthRating": number (1-10), "summary": string, "confidenceScore": number (0-100), "toxicAlert": boolean}. ' +
+      'Identify if any ingredient is strictly toxic for pets (e.g. xylitol, chocolate, onion). ' +
+      'The confidenceScore should reflect how readable the image is. ' +
+      'Use concise ingredient names and a practical summary.';
 
     try {
       const response = await model.generateContent({
@@ -103,7 +107,13 @@ export class FoodAnalysisService {
         ? Math.min(10, Math.max(1, Math.round(rawRating)))
         : 1;
 
-      return { ingredients, harmfulAdditives, healthRating, summary };
+      const confidenceScore = Number.isFinite(Number(parsed.confidenceScore))
+        ? Math.min(100, Math.max(0, Math.round(Number(parsed.confidenceScore))))
+        : 0;
+
+      const toxicAlert = !!parsed.toxicAlert;
+
+      return { ingredients, harmfulAdditives, healthRating, summary, confidenceScore, toxicAlert };
     } catch {
       throw new BadGatewayException('Failed to parse Gemini analysis response');
     }
