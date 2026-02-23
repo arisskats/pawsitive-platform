@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  password         String
+  name             String?
+  pushNotifications Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  pets             Pet[]
+}
+
+model Pet {
+  id            String   @id @default(cuid())
+  name          String
+  type          String   // "DOG" or "CAT"
+  breed         String?
+  birthday      DateTime?
+  weight        Float?
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id])
+  healthRecords HealthRecord[]
+  foodAnalyses  FoodAnalysis[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model HealthRecord {
+  id        String   @id @default(cuid())
+  date      DateTime @default(now())
+  type      String   // "VACCINATION", "CHECKUP", "SURGERY", etc.
+  notes     String?
+  petId     String
+  pet       Pet      @relation(fields: [petId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FoodAnalysis {
+  id        String   @id @default(cuid())
+  photoUrl  String
+  result    Json     // Detailed analysis result
+  petId     String
+  pet       Pet      @relation(fields: [petId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Spot {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  latitude    Float
+  longitude   Float
+  type        String   // "DOG_PARK", "VET", "PET_STORE"
+  rating      Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

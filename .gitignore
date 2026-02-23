@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.next/
+.env
+.env.*
+*.save
+*.save.*
+*.deleted.*
+log.txt
+errors.txt
+traceback.txt
+screenshot.png
+gh_bin/
+.pi/
