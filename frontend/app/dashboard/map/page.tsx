@@ -43,9 +43,9 @@ export default function MapPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white p-8 text-gray-900">
-      <header className="mb-8">
-        <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-900">
+    <div className="min-h-screen p-8 text-gray-900">
+      <header className="mb-8 rounded-2xl border border-white/70 bg-white/80 p-6 shadow-sm backdrop-blur">
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
           <MapPinned /> Dog Parks Map
         </h1>
         <p className="text-gray-500 text-sm mt-1">Explore pet-friendly spots around you.</p>
@@ -63,7 +63,7 @@ export default function MapPage() {
               <p className="text-sm text-slate-400 italic">No spots found.</p>
             ) : (
               spots.map((spot) => (
-                <div key={spot.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100 shadow-sm hover:border-blue-200 transition">
+                <div key={spot.id} className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm hover:border-blue-200">
                   <h3 className="font-bold text-gray-800">{spot.name}</h3>
                   <p className="text-xs text-gray-500 mt-1">{spot.address || "Athens, Greece"}</p>
                 </div>

@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f7fb;
+  --foreground: #0f172a;
+  --brand: #2563eb;
+  --brand-soft: #dbeafe;
+  --card: #ffffff;
 }
 
 @theme inline {
@@ -20,7 +23,18 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at 8% 0%, #e0ecff 0%, transparent 22%),
+    radial-gradient(circle at 100% 0%, #ffe4ef 0%, transparent 18%),
+    var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.card-hover {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }

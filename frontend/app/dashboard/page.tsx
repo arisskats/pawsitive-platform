@@ -1,7 +1,8 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { CalendarClock, PawPrint, Sparkles, Weight } from "lucide-react";
 import FoodScanner from "@/src/components/dashboard/FoodScanner";
 
 interface Pet {
@@ -47,6 +48,17 @@ export default function Dashboard() {
     fetchPets();
   }, []);
 
+  const stats = useMemo(() => {
+    const withBirthday = pets.filter((pet) => Boolean(pet.birthday)).length;
+    const withWeight = pets.filter((pet) => pet.weight !== undefined).length;
+    return {
+      total: pets.length,
+      withBirthday,
+      withWeight,
+      aiTools: 2,
+    };
+  }, [pets]);
+
   const closeAddPetModal = () => {
     setIsAddPetModalOpen(false);
     setNewPetName("");
@@ -89,39 +101,75 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 text-gray-900">
-      <div className="max-w-4xl mx-auto">
-        <header className="flex justify-between items-center mb-8">
+    <div className="min-h-screen p-8 text-slate-900">
+      <div className="mx-auto max-w-5xl">
+        <header className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/70 bg-white/80 p-6 shadow-sm backdrop-blur">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Pawsitive Tracker</h1>
-            <p className="text-gray-600">Welcome back!</p>
+            <p className="mb-2 inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">Pet wellness dashboard</p>
+            <h1 className="text-3xl font-bold text-slate-900">Pawsitive Tracker</h1>
+            <p className="text-slate-600">Welcome back!</p>
           </div>
           <button
             onClick={() => setIsAddPetModalOpen(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow transition hover:brightness-110"
           >
             + New Pet
           </button>
         </header>
 
+        <section className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
+            <p className="text-xs text-slate-500">Pets</p>
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-2xl font-bold text-slate-900">{stats.total}</p>
+              <PawPrint className="h-5 w-5 text-blue-600" />
+            </div>
+          </div>
+          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
+            <p className="text-xs text-slate-500">Birthdays tracked</p>
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-2xl font-bold text-slate-900">{stats.withBirthday}</p>
+              <CalendarClock className="h-5 w-5 text-indigo-600" />
+            </div>
+          </div>
+          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
+            <p className="text-xs text-slate-500">Weight tracked</p>
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-2xl font-bold text-slate-900">{stats.withWeight}</p>
+              <Weight className="h-5 w-5 text-pink-600" />
+            </div>
+          </div>
+          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
+            <p className="text-xs text-slate-500">AI tools enabled</p>
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-2xl font-bold text-slate-900">{stats.aiTools}</p>
+              <Sparkles className="h-5 w-5 text-violet-600" />
+            </div>
+          </div>
+        </section>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {loading ? (
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <p className="text-gray-600">Loading pets...</p>
+            <div className="rounded-2xl border border-white/80 bg-white p-6 shadow-sm">
+              <p className="text-slate-600">Loading pets...</p>
             </div>
           ) : pets.length === 0 ? (
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <p className="text-gray-600">No pets found yet.</p>
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 shadow-sm">
+              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-pink-100 text-2xl">
+                🐾
+              </div>
+              <p className="text-slate-700">No pets found yet.</p>
+              <p className="mt-2 text-sm text-slate-500">Add your first pet to unlock health insights and AI tools.</p>
             </div>
           ) : (
             pets.map((pet) => (
               <Link
                 key={pet.id}
                 href={`/dashboard/pet/${pet.id}`}
-                className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition cursor-pointer"
+                className="card-hover cursor-pointer rounded-2xl border border-white/80 bg-white p-6 shadow-sm"
               >
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-pink-100 text-2xl">
                     {pet.type === "DOG" ? "🐶" : "🐱"}
                   </div>
                   <div>
@@ -154,24 +202,24 @@ export default function Dashboard() {
             ))
           )}
 
-          <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col justify-center text-center">
-            <h3 className="text-blue-800 font-bold mb-2">Health Stats</h3>
-            <p className="text-blue-600 text-sm">Keep your pets active and their checkups up to date.</p>
+          <div className="flex flex-col justify-center rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 text-center shadow-sm">
+            <h3 className="mb-2 font-bold text-blue-900">Health Stats</h3>
+            <p className="text-sm text-blue-700">Keep your pets active and their checkups up to date.</p>
           </div>
         </div>
 
         <section className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900">Έξυπνα Εργαλεία AI</h2>
+          <h2 className="mb-6 text-2xl font-bold text-slate-900">Έξυπνα Εργαλεία AI</h2>
           <div className="grid grid-cols-1 gap-8">
             {pets.length > 0 && <FoodScanner petId={pets[0].id} />}
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-white rounded-lg border border-gray-100 text-center hover:shadow-md transition cursor-pointer">
-                <div className="text-2xl mb-2">🩺</div>
+              <div className="card-hover cursor-pointer rounded-xl border border-white/80 bg-white p-5 text-center shadow-sm">
+                <div className="mb-2 text-2xl">🩺</div>
                 <span className="text-sm font-medium">Symptom Checker</span>
               </div>
-              <div className="p-4 bg-white rounded-lg border border-gray-100 text-center hover:shadow-md transition cursor-pointer">
-                <div className="text-2xl mb-2">📄</div>
+              <div className="card-hover cursor-pointer rounded-xl border border-white/80 bg-white p-5 text-center shadow-sm">
+                <div className="mb-2 text-2xl">📄</div>
                 <span className="text-sm font-medium">Report Summarizer</span>
               </div>
             </div>

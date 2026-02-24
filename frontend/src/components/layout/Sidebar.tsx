@@ -21,11 +21,12 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-full border-b border-slate-200 bg-white md:min-h-screen md:w-72 md:border-b-0 md:border-r">
+    <aside className="w-full border-b border-slate-200/70 bg-white/85 backdrop-blur md:min-h-screen md:w-72 md:border-b-0 md:border-r md:border-slate-200/80">
       <div className="px-4 py-4 md:px-6 md:py-8">
         <div className="mb-4 hidden md:block">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Pawsitive</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Pawsitive</p>
           <h1 className="mt-1 text-xl font-bold text-slate-900">Platform</h1>
+          <p className="mt-2 text-xs text-slate-500">Care, track and protect your pet family.</p>
         </div>
 
         <nav className="flex gap-2 md:flex-col">
@@ -41,7 +42,7 @@ export default function Sidebar() {
                 href={item.href}
                 className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition md:w-full ${
                   isActive
-                    ? "bg-slate-900 text-white shadow-sm"
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
