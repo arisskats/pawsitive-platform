@@ -3,6 +3,16 @@
 import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
 
+interface HealthRecord {
+  id: string;
+  createdAt?: string;
+}
+
+interface FoodAnalysis {
+  id: string;
+  createdAt?: string;
+}
+
 interface Pet {
   id: string;
   name: string;
@@ -10,8 +20,8 @@ interface Pet {
   breed?: string;
   birthday?: string;
   weight?: number;
-  healthRecords: any[];
-  foodAnalyses: any[];
+  healthRecords: HealthRecord[];
+  foodAnalyses: FoodAnalysis[];
 }
 
 export default function PetProfile({ params }: { params: Promise<{ id: string }> }) {

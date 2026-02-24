@@ -45,7 +45,6 @@ const mockAlerts: Alert[] = [
 
 export default function CommunityMap() {
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
-  const [isAdding, setIsAdding] = useState(false);
 
   const getTypeStyles = (type: string) => {
     switch (type) {
@@ -98,7 +97,6 @@ export default function CommunityMap() {
         </div>
 
         <button 
-          onClick={() => setIsAdding(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl shadow-xl transition-all active:scale-95 pointer-events-auto"
         >
           <Plus className="w-6 h-6" />

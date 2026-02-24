@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Camera, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Camera, Loader2, AlertCircle } from "lucide-react";
 
 interface FoodScannerProps {
   petId: string;
@@ -34,7 +34,8 @@ export default function FoodScanner({ petId }: FoodScannerProps) {
       const formData = new FormData();
       formData.append("image", file);
 
-      const response = await fetch(`http://localhost:3001/food-analysis/${petId}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const response = await fetch(`${apiUrl}/food-analysis/${petId}`, {
         method: "POST",
         body: formData,
       });
@@ -45,9 +46,9 @@ export default function FoodScanner({ petId }: FoodScannerProps) {
 
       const data = await response.json();
       setResult(data.result); 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Scanning error:", err);
-      setError(err.message || "Κάτι πήγε στραβά.");
+      setError(err instanceof Error ? err.message : "Κάτι πήγε στραβά.");
     } finally {
       setIsScanning(false);
     }
@@ -119,7 +120,7 @@ export default function FoodScanner({ petId }: FoodScannerProps) {
           
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-700 leading-relaxed italic">
-              "{result.summary}"
+              &ldquo;{result.summary}&rdquo;
             </p>
           </div>
 
