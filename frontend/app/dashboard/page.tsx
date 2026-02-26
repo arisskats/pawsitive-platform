@@ -4,6 +4,7 @@ import React, { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CalendarClock, PawPrint, Sparkles, Weight } from "lucide-react";
 import FoodScanner from "@/src/components/dashboard/FoodScanner";
+import { useLanguage } from "@/src/components/i18n/LanguageProvider";
 
 interface Pet {
   id: string;
@@ -24,6 +25,74 @@ export default function Dashboard() {
   const [newPetBreed, setNewPetBreed] = useState("");
   const [newPetBirthday, setNewPetBirthday] = useState("");
   const [newPetWeight, setNewPetWeight] = useState("");
+  const { lang } = useLanguage();
+
+  const text = {
+    el: {
+      badge: "Πίνακας ευεξίας κατοικιδίων",
+      title: "Pawsitive Tracker",
+      welcome: "Καλώς ήρθες ξανά!",
+      addPet: "+ Νέο Κατοικίδιο",
+      pets: "Κατοικίδια",
+      birthdays: "Γενέθλια καταγεγραμμένα",
+      weightTracked: "Βάρος καταγεγραμμένο",
+      aiTools: "AI εργαλεία ενεργά",
+      loadingPets: "Φόρτωση κατοικιδίων...",
+      noPetsTitle: "Δεν βρέθηκαν κατοικίδια ακόμα.",
+      noPetsText: "Πρόσθεσε το πρώτο σου κατοικίδιο για να ενεργοποιήσεις insights και AI εργαλεία.",
+      unknownBreed: "Άγνωστη ράτσα",
+      type: "Είδος",
+      birthday: "Γενέθλια",
+      weight: "Βάρος",
+      healthStats: "Στατιστικά Υγείας",
+      healthStatsText: "Κράτα τα κατοικίδιά σου ενεργά και τα checkups στην ώρα τους.",
+      aiSection: "Έξυπνα Εργαλεία AI",
+      symptomChecker: "Έλεγχος Συμπτωμάτων",
+      reportSummarizer: "Σύνοψη Αναφορών",
+      addNewPet: "Προσθήκη Νέου Κατοικιδίου",
+      close: "Κλείσιμο",
+      name: "Όνομα",
+      petType: "Τύπος",
+      breed: "Ράτσα",
+      weightKg: "Βάρος (kg)",
+      cancel: "Ακύρωση",
+      saving: "Αποθήκευση...",
+      savePet: "Αποθήκευση",
+    },
+    en: {
+      badge: "Pet wellness dashboard",
+      title: "Pawsitive Tracker",
+      welcome: "Welcome back!",
+      addPet: "+ New Pet",
+      pets: "Pets",
+      birthdays: "Birthdays tracked",
+      weightTracked: "Weight tracked",
+      aiTools: "AI tools enabled",
+      loadingPets: "Loading pets...",
+      noPetsTitle: "No pets found yet.",
+      noPetsText: "Add your first pet to unlock health insights and AI tools.",
+      unknownBreed: "Unknown breed",
+      type: "Type",
+      birthday: "Birthday",
+      weight: "Weight",
+      healthStats: "Health Stats",
+      healthStatsText: "Keep your pets active and their checkups up to date.",
+      aiSection: "Smart AI Tools",
+      symptomChecker: "Symptom Checker",
+      reportSummarizer: "Report Summarizer",
+      addNewPet: "Add New Pet",
+      close: "Close",
+      name: "Name",
+      petType: "Type",
+      breed: "Breed",
+      weightKg: "Weight (kg)",
+      cancel: "Cancel",
+      saving: "Saving...",
+      savePet: "Save Pet",
+    },
+  } as const;
+
+  const t = text[lang];
 
   const fetchPets = async () => {
     try {
@@ -103,44 +172,44 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen p-8 text-slate-900">
       <div className="mx-auto max-w-5xl">
-        <header className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/70 bg-white/80 p-6 shadow-sm backdrop-blur">
+        <header className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-sky-100/90 bg-white/78 p-6 shadow-[0_8px_22px_rgba(46,92,155,0.08)] backdrop-blur">
           <div>
-            <p className="mb-2 inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">Pet wellness dashboard</p>
-            <h1 className="text-3xl font-bold text-slate-900">Pawsitive Tracker</h1>
-            <p className="text-slate-600">Welcome back!</p>
+            <p className="mb-2 inline-flex rounded-full border border-sky-100 bg-sky-50/80 px-3 py-1 text-xs font-semibold text-sky-700">{t.badge}</p>
+            <h1 className="text-3xl font-bold text-slate-900">{t.title}</h1>
+            <p className="text-slate-600">{t.welcome}</p>
           </div>
           <button
             onClick={() => setIsAddPetModalOpen(true)}
-            className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow transition hover:brightness-110"
+            className="rounded-xl border border-sky-300 bg-gradient-to-r from-[#7ee5d7] to-[#8fdcff] px-5 py-2.5 font-semibold text-slate-900 shadow-[0_10px_20px_rgba(100,208,220,0.25)] transition hover:brightness-105"
           >
-            + New Pet
+            {t.addPet}
           </button>
         </header>
 
         <section className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
-            <p className="text-xs text-slate-500">Pets</p>
+          <div className="card-hover rounded-xl border border-sky-100/80 bg-white/90 p-4 shadow-[0_6px_16px_rgba(56,88,128,0.06)]">
+            <p className="text-xs text-slate-500">{t.pets}</p>
             <div className="mt-2 flex items-center justify-between">
               <p className="text-2xl font-bold text-slate-900">{stats.total}</p>
               <PawPrint className="h-5 w-5 text-blue-600" />
             </div>
           </div>
-          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
-            <p className="text-xs text-slate-500">Birthdays tracked</p>
+          <div className="card-hover rounded-xl border border-sky-100/80 bg-white/90 p-4 shadow-[0_6px_16px_rgba(56,88,128,0.06)]">
+            <p className="text-xs text-slate-500">{t.birthdays}</p>
             <div className="mt-2 flex items-center justify-between">
               <p className="text-2xl font-bold text-slate-900">{stats.withBirthday}</p>
               <CalendarClock className="h-5 w-5 text-indigo-600" />
             </div>
           </div>
-          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
-            <p className="text-xs text-slate-500">Weight tracked</p>
+          <div className="card-hover rounded-xl border border-sky-100/80 bg-white/90 p-4 shadow-[0_6px_16px_rgba(56,88,128,0.06)]">
+            <p className="text-xs text-slate-500">{t.weightTracked}</p>
             <div className="mt-2 flex items-center justify-between">
               <p className="text-2xl font-bold text-slate-900">{stats.withWeight}</p>
               <Weight className="h-5 w-5 text-pink-600" />
             </div>
           </div>
-          <div className="card-hover rounded-xl border border-white/80 bg-white p-4 shadow-sm">
-            <p className="text-xs text-slate-500">AI tools enabled</p>
+          <div className="card-hover rounded-xl border border-sky-100/80 bg-white/90 p-4 shadow-[0_6px_16px_rgba(56,88,128,0.06)]">
+            <p className="text-xs text-slate-500">{t.aiTools}</p>
             <div className="mt-2 flex items-center justify-between">
               <p className="text-2xl font-bold text-slate-900">{stats.aiTools}</p>
               <Sparkles className="h-5 w-5 text-violet-600" />
@@ -148,52 +217,50 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {loading ? (
-            <div className="rounded-2xl border border-white/80 bg-white p-6 shadow-sm">
-              <p className="text-slate-600">Loading pets...</p>
+            <div className="rounded-2xl border border-sky-100/80 bg-white/90 p-6 shadow-[0_8px_22px_rgba(46,92,155,0.08)]">
+              <p className="text-slate-600">{t.loadingPets}</p>
             </div>
           ) : pets.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-dashed border-sky-200 bg-white/90 p-6 shadow-[0_8px_22px_rgba(46,92,155,0.08)]">
               <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-pink-100 text-2xl">
                 🐾
               </div>
-              <p className="text-slate-700">No pets found yet.</p>
-              <p className="mt-2 text-sm text-slate-500">Add your first pet to unlock health insights and AI tools.</p>
+              <p className="text-slate-700">{t.noPetsTitle}</p>
+              <p className="mt-2 text-sm text-slate-500">{t.noPetsText}</p>
             </div>
           ) : (
             pets.map((pet) => (
               <Link
                 key={pet.id}
                 href={`/dashboard/pet/${pet.id}`}
-                className="card-hover cursor-pointer rounded-2xl border border-white/80 bg-white p-6 shadow-sm"
+                className="card-hover cursor-pointer rounded-2xl border border-sky-100/80 bg-white/90 p-6 shadow-[0_8px_22px_rgba(46,92,155,0.08)]"
               >
-                <div className="flex items-center gap-4 mb-4">
+                <div className="mb-4 flex items-center gap-4">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-pink-100 text-2xl">
                     {pet.type === "DOG" ? "🐶" : "🐱"}
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">{pet.name}</h2>
-                    <p className="text-sm text-gray-500">{pet.breed ?? "Unknown breed"}</p>
+                    <p className="text-sm text-gray-500">{pet.breed ?? t.unknownBreed}</p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Type:</span>
+                    <span className="text-gray-500">{t.type}:</span>
                     <span className="font-medium text-gray-700">{pet.type}</span>
                   </div>
                   {pet.birthday && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Birthday:</span>
-                      <span className="font-medium text-gray-700">
-                        {new Date(pet.birthday).toLocaleDateString()}
-                      </span>
+                      <span className="text-gray-500">{t.birthday}:</span>
+                      <span className="font-medium text-gray-700">{new Date(pet.birthday).toLocaleDateString(lang === "el" ? "el-GR" : "en-US")}</span>
                     </div>
                   )}
                   {pet.weight !== undefined && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Weight:</span>
+                      <span className="text-gray-500">{t.weight}:</span>
                       <span className="font-medium text-gray-700">{pet.weight} kg</span>
                     </div>
                   )}
@@ -202,25 +269,25 @@ export default function Dashboard() {
             ))
           )}
 
-          <div className="flex flex-col justify-center rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 text-center shadow-sm">
-            <h3 className="mb-2 font-bold text-blue-900">Health Stats</h3>
-            <p className="text-sm text-blue-700">Keep your pets active and their checkups up to date.</p>
+          <div className="flex flex-col justify-center rounded-2xl border border-sky-100 bg-gradient-to-br from-cyan-50 to-emerald-50 p-6 text-center shadow-[0_8px_22px_rgba(46,92,155,0.08)]">
+            <h3 className="mb-2 font-bold text-blue-900">{t.healthStats}</h3>
+            <p className="text-sm text-blue-700">{t.healthStatsText}</p>
           </div>
         </div>
 
         <section className="mt-12">
-          <h2 className="mb-6 text-2xl font-bold text-slate-900">Έξυπνα Εργαλεία AI</h2>
+          <h2 className="mb-6 text-2xl font-bold text-slate-900">{t.aiSection}</h2>
           <div className="grid grid-cols-1 gap-8">
             {pets.length > 0 && <FoodScanner petId={pets[0].id} />}
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="card-hover cursor-pointer rounded-xl border border-white/80 bg-white p-5 text-center shadow-sm">
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="card-hover cursor-pointer rounded-xl border border-sky-100/80 bg-white/90 p-5 text-center shadow-[0_6px_16px_rgba(56,88,128,0.06)]">
                 <div className="mb-2 text-2xl">🩺</div>
-                <span className="text-sm font-medium">Symptom Checker</span>
+                <span className="text-sm font-medium">{t.symptomChecker}</span>
               </div>
-              <div className="card-hover cursor-pointer rounded-xl border border-white/80 bg-white p-5 text-center shadow-sm">
+              <div className="card-hover cursor-pointer rounded-xl border border-sky-100/80 bg-white/90 p-5 text-center shadow-[0_6px_16px_rgba(56,88,128,0.06)]">
                 <div className="mb-2 text-2xl">📄</div>
-                <span className="text-sm font-medium">Report Summarizer</span>
+                <span className="text-sm font-medium">{t.reportSummarizer}</span>
               </div>
             </div>
           </div>
@@ -228,22 +295,19 @@ export default function Dashboard() {
       </div>
 
       {isAddPetModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 px-4">
-          <div className="w-full max-w-lg rounded-xl border border-gray-200 bg-white p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 px-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-lg rounded-2xl border border-sky-100 bg-white/95 p-6 shadow-[0_18px_40px_rgba(46,92,155,0.18)]">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Add New Pet</h2>
-              <button
-                onClick={closeAddPetModal}
-                className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Close
+              <h2 className="text-xl font-bold text-gray-900">{t.addNewPet}</h2>
+              <button onClick={closeAddPetModal} className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                {t.close}
               </button>
             </div>
 
             <form onSubmit={handleAddPet} className="space-y-4">
               <div>
                 <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">
-                  Name
+                  {t.name}
                 </label>
                 <input
                   id="name"
@@ -257,7 +321,7 @@ export default function Dashboard() {
 
               <div>
                 <label htmlFor="type" className="mb-1 block text-sm font-medium text-gray-700">
-                  Type
+                  {t.petType}
                 </label>
                 <select
                   id="type"
@@ -272,7 +336,7 @@ export default function Dashboard() {
 
               <div>
                 <label htmlFor="breed" className="mb-1 block text-sm font-medium text-gray-700">
-                  Breed
+                  {t.breed}
                 </label>
                 <input
                   id="breed"
@@ -285,7 +349,7 @@ export default function Dashboard() {
 
               <div>
                 <label htmlFor="birthday" className="mb-1 block text-sm font-medium text-gray-700">
-                  Birthday
+                  {t.birthday}
                 </label>
                 <input
                   id="birthday"
@@ -298,7 +362,7 @@ export default function Dashboard() {
 
               <div>
                 <label htmlFor="weight" className="mb-1 block text-sm font-medium text-gray-700">
-                  Weight (kg)
+                  {t.weightKg}
                 </label>
                 <input
                   id="weight"
@@ -312,19 +376,15 @@ export default function Dashboard() {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={closeAddPetModal}
-                  className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
+                <button type="button" onClick={closeAddPetModal} className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {isSubmitting ? "Saving..." : "Save Pet"}
+                  {isSubmitting ? t.saving : t.savePet}
                 </button>
               </div>
             </form>

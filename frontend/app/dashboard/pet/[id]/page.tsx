@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
+import { ArrowLeft, CalendarDays, HeartPulse, PawPrint, Scale } from "lucide-react";
+import { useLanguage } from "@/src/components/i18n/LanguageProvider";
 
 interface HealthRecord {
   id: string;
@@ -28,6 +30,44 @@ export default function PetProfile({ params }: { params: Promise<{ id: string }>
   const { id } = use(params);
   const [pet, setPet] = useState<Pet | null>(null);
   const [loading, setLoading] = useState(true);
+  const { lang } = useLanguage();
+
+  const t = {
+    el: {
+      loading: "Φορτώνω το προφίλ... 🐾",
+      notFound: "Το κατοικίδιο δεν βρέθηκε. 🚫",
+      back: "Πίσω στο Dashboard",
+      unknownBreed: "Άγνωστη ράτσα",
+      basics: "Βασικά Στοιχεία",
+      type: "Είδος",
+      weight: "Βάρος",
+      birthday: "Γενέθλια",
+      healthHistory: "Ιστορικό Υγείας",
+      noHealth: "Δεν υπάρχουν ακόμα εγγραφές υγείας.",
+      aiFood: "Αναλύσεις Τροφών AI",
+      noFood: "Δεν έχετε κάνει ακόμα σκανάρισμα τροφής.",
+      healthRecords: "Εγγραφές υγείας",
+      foodScans: "Food scans",
+      profile: "Προφίλ κατοικιδίου",
+    },
+    en: {
+      loading: "Loading profile... 🐾",
+      notFound: "Pet not found. 🚫",
+      back: "Back to Dashboard",
+      unknownBreed: "Unknown breed",
+      basics: "Basic Info",
+      type: "Type",
+      weight: "Weight",
+      birthday: "Birthday",
+      healthHistory: "Health History",
+      noHealth: "No health records yet.",
+      aiFood: "AI Food Analyses",
+      noFood: "No food scans yet.",
+      healthRecords: "Health records",
+      foodScans: "Food scans",
+      profile: "Pet profile",
+    },
+  }[lang];
 
   useEffect(() => {
     const fetchPet = async () => {
@@ -45,75 +85,113 @@ export default function PetProfile({ params }: { params: Promise<{ id: string }>
     fetchPet();
   }, [id]);
 
-  if (loading) return <div className="p-8 text-center text-gray-600">Φορτώνω το προφίλ... 🐾</div>;
-  if (!pet) return <div className="p-8 text-center text-red-600">Το κατοικίδιο δεν βρέθηκε. 🚫</div>;
+  if (loading) return <div className="p-8 text-center text-gray-600">{t.loading}</div>;
+  if (!pet) return <div className="p-8 text-center text-red-600">{t.notFound}</div>;
+
+  const emoji = pet.type === "DOG" ? "🐶" : "🐱";
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <Link href="/dashboard" className="text-blue-600 hover:underline mb-6 inline-block">
-          ← Πίσω στο Dashboard
+    <div className="min-h-screen p-8 text-slate-900">
+      <div className="mx-auto max-w-5xl">
+        <Link
+          href="/dashboard"
+          className="mb-5 inline-flex items-center gap-2 rounded-lg border border-sky-100 bg-white/80 px-3 py-1.5 text-sm font-medium text-sky-700 transition hover:bg-white"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t.back}
         </Link>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          {/* Header Section */}
-          <div className="bg-blue-600 p-8 text-white flex items-center gap-6">
-            <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center text-4xl">
-              {pet.type === "DOG" ? "🐶" : "🐱"}
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold">{pet.name}</h1>
-              <p className="opacity-90 text-lg">{pet.breed ?? "Άγνωστη ράτσα"}</p>
+        <div className="overflow-hidden rounded-3xl border border-sky-100/90 bg-white/85 shadow-[0_12px_32px_rgba(46,92,155,0.12)] backdrop-blur">
+          <div className="border-b border-sky-100/80 bg-gradient-to-r from-sky-100/90 via-cyan-50 to-emerald-50 p-8">
+            <p className="mb-2 inline-flex rounded-full border border-sky-200 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">
+              {t.profile}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-5">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full border border-white/70 bg-white/80 text-4xl shadow-sm">
+                {emoji}
+              </div>
+
+              <div>
+                <h1 className="text-4xl font-bold text-slate-900">{pet.name}</h1>
+                <p className="text-base text-slate-600">{pet.breed ?? t.unknownBreed}</p>
+              </div>
             </div>
           </div>
 
-          <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Stats Column */}
-            <div className="space-y-6">
-              <h3 className="text-gray-900 font-bold border-b pb-2 text-lg">Βασικά Στοιχεία</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Είδος:</span>
-                  <span className="font-medium">{pet.type}</span>
+          <div className="grid grid-cols-1 gap-6 p-8 lg:grid-cols-[320px_1fr]">
+            <aside className="space-y-4 rounded-2xl border border-sky-100/80 bg-white/80 p-5 shadow-[0_8px_18px_rgba(46,92,155,0.08)]">
+              <h3 className="text-lg font-bold text-slate-900">{t.basics}</h3>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-white/80 px-3 py-2">
+                  <span className="inline-flex items-center gap-2 text-slate-500">
+                    <PawPrint className="h-4 w-4" /> {t.type}
+                  </span>
+                  <span className="font-semibold text-slate-800">{pet.type}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Βάρος:</span>
-                  <span className="font-medium">{pet.weight ? `${pet.weight} kg` : "-"}</span>
+
+                <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-white/80 px-3 py-2">
+                  <span className="inline-flex items-center gap-2 text-slate-500">
+                    <Scale className="h-4 w-4" /> {t.weight}
+                  </span>
+                  <span className="font-semibold text-slate-800">{pet.weight ? `${pet.weight} kg` : "-"}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Γενέθλια:</span>
-                  <span className="font-medium">
-                    {pet.birthday ? new Date(pet.birthday).toLocaleDateString("el-GR") : "-"}
+
+                <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-white/80 px-3 py-2">
+                  <span className="inline-flex items-center gap-2 text-slate-500">
+                    <CalendarDays className="h-4 w-4" /> {t.birthday}
+                  </span>
+                  <span className="font-semibold text-slate-800">
+                    {pet.birthday ? new Date(pet.birthday).toLocaleDateString(lang === "el" ? "el-GR" : "en-US") : "-"}
                   </span>
                 </div>
               </div>
-            </div>
 
-            {/* Health & History Column */}
-            <div className="md:col-span-2 space-y-8">
-              <section>
-                <h3 className="text-gray-900 font-bold border-b pb-2 text-lg mb-4 text-blue-700">
-                  Ιστορικό Υγείας 🩺
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="rounded-xl border border-sky-100 bg-sky-50/70 p-3 text-center">
+                  <p className="text-lg font-bold text-sky-800">{pet.healthRecords.length}</p>
+                  <p className="text-xs text-sky-700">{t.healthRecords}</p>
+                </div>
+                <div className="rounded-xl border border-emerald-100 bg-emerald-50/70 p-3 text-center">
+                  <p className="text-lg font-bold text-emerald-800">{pet.foodAnalyses.length}</p>
+                  <p className="text-xs text-emerald-700">{t.foodScans}</p>
+                </div>
+              </div>
+            </aside>
+
+            <div className="space-y-6">
+              <section className="rounded-2xl border border-sky-100/80 bg-white/90 p-5 shadow-[0_8px_18px_rgba(46,92,155,0.08)]">
+                <h3 className="mb-3 inline-flex items-center gap-2 text-lg font-bold text-sky-800">
+                  <HeartPulse className="h-5 w-5" /> {t.healthHistory}
                 </h3>
+
                 {pet.healthRecords.length === 0 ? (
-                  <p className="text-gray-500 italic">Δεν υπάρχουν ακόμα εγγραφές υγείας.</p>
+                  <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50/70 px-3 py-3 text-sm italic text-slate-500">{t.noHealth}</p>
                 ) : (
-                  <ul className="space-y-3">
-                    {/* Maps records here */}
+                  <ul className="space-y-2">
+                    {pet.healthRecords.map((record) => (
+                      <li key={record.id} className="rounded-lg border border-slate-100 bg-white px-3 py-2 text-sm text-slate-700">
+                        {record.createdAt ? new Date(record.createdAt).toLocaleString(lang === "el" ? "el-GR" : "en-US") : record.id}
+                      </li>
+                    ))}
                   </ul>
                 )}
               </section>
 
-              <section>
-                <h3 className="text-gray-900 font-bold border-b pb-2 text-lg mb-4 text-purple-700">
-                  Αναλύσεις Τροφών AI 📸
-                </h3>
+              <section className="rounded-2xl border border-violet-100/80 bg-white/90 p-5 shadow-[0_8px_18px_rgba(46,92,155,0.08)]">
+                <h3 className="mb-3 text-lg font-bold text-violet-800">{t.aiFood}</h3>
+
                 {pet.foodAnalyses.length === 0 ? (
-                  <p className="text-gray-500 italic">Δεν έχετε κάνει ακόμα σκανάρισμα τροφής.</p>
+                  <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50/70 px-3 py-3 text-sm italic text-slate-500">{t.noFood}</p>
                 ) : (
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Maps analyses here */}
-                  </div>
+                  <ul className="space-y-2">
+                    {pet.foodAnalyses.map((analysis) => (
+                      <li key={analysis.id} className="rounded-lg border border-slate-100 bg-white px-3 py-2 text-sm text-slate-700">
+                        {analysis.createdAt ? new Date(analysis.createdAt).toLocaleString(lang === "el" ? "el-GR" : "en-US") : analysis.id}
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </section>
             </div>
