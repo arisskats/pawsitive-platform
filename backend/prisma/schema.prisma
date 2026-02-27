@@ -23,6 +23,8 @@ model User {
   communityAlerts  CommunityAlert[]
   communityComments CommunityComment[]
   verifications    Verification[]
+  socialPosts      SocialPost[]
+  socialComments   SocialPostComment[]
 }
 
 model Pet {
@@ -110,4 +112,25 @@ model Verification {
   createdAt DateTime @default(now())
 
   @@unique([userId, alertId])
+}
+
+model SocialPost {
+  id        String   @id @default(cuid())
+  content   String
+  imageUrl  String?
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  comments  SocialPostComment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SocialPostComment {
+  id        String   @id @default(cuid())
+  text      String
+  postId    String
+  post      SocialPost @relation(fields: [postId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
 }

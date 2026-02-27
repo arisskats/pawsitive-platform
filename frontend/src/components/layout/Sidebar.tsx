@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HeartPulse, LayoutDashboard, MapPinned } from "lucide-react";
+import { HeartPulse, LayoutDashboard, MapPinned, MessageCircle } from "lucide-react";
 import LanguageToggle from "@/src/components/i18n/LanguageToggle";
 import { useLanguage } from "@/src/components/i18n/LanguageProvider";
 
@@ -16,12 +16,14 @@ export default function Sidebar() {
       subtitle: "Φροντίδα, καταγραφή και προστασία για την οικογένεια του κατοικιδίου σου.",
       dashboard: "Dashboard",
       map: "Χάρτης",
+      social: "Κοινότητα",
     },
     en: {
       title: "Platform",
       subtitle: "Care, track and protect your pet family.",
       dashboard: "Dashboard",
       map: "Map",
+      social: "Social",
     },
   } as const;
 
@@ -37,6 +39,11 @@ export default function Sidebar() {
       label: t.map,
       href: "/dashboard/map",
       icon: MapPinned,
+    },
+    {
+      label: t.social,
+      href: "/dashboard/social",
+      icon: MessageCircle,
     },
   ];
 
