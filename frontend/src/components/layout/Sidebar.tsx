@@ -1,14 +1,34 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HeartPulse, LayoutDashboard, MapPinned, MessageCircle } from "lucide-react";
 import LanguageToggle from "@/src/components/i18n/LanguageToggle";
 import { useLanguage } from "@/src/components/i18n/LanguageProvider";
+import { useEffect, useState } from "react";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { lang } = useLanguage();
+  const [socialUnread, setSocialUnread] = useState(0);
+
+  useEffect(() => {
+    let alive = true;
+    const load = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/social/activity");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (alive) setSocialUnread(data?.unread ?? 0);
+      } catch {}
+    };
+    load();
+    const id = setInterval(load, 30000);
+    return () => {
+      alive = false;
+      clearInterval(id);
+    };
+  }, []);
 
   const labels = {
     el: {
@@ -30,21 +50,9 @@ export default function Sidebar() {
   const t = labels[lang];
 
   const navItems = [
-    {
-      label: t.dashboard,
-      href: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      label: t.map,
-      href: "/dashboard/map",
-      icon: MapPinned,
-    },
-    {
-      label: t.social,
-      href: "/dashboard/social",
-      icon: MessageCircle,
-    },
+    { label: t.dashboard, href: "/dashboard", icon: LayoutDashboard },
+    { label: t.map, href: "/dashboard/map", icon: MapPinned },
+    { label: t.social, href: "/dashboard/social", icon: MessageCircle, badge: socialUnread },
   ];
 
   return (
@@ -66,22 +74,25 @@ export default function Sidebar() {
         <nav className="flex gap-2 md:flex-col">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`inline-flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition md:w-full ${
+                className={`inline-flex items-center justify-between gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition md:w-full ${
                   isActive
                     ? "border border-sky-200 bg-gradient-to-r from-sky-50 to-cyan-50 text-slate-900 shadow-sm"
                     : "border border-slate-200/80 bg-white/65 text-slate-700 hover:border-sky-200 hover:bg-white hover:text-slate-900"
                 }`}
               >
-                <Icon className="h-4 w-4" />
-                <span>{item.label}</span>
+                <span className="inline-flex items-center gap-2.5">
+                  <Icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </span>
+                {!!item.badge && item.badge > 0 && (
+                  <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[11px] font-bold text-white">{item.badge > 99 ? "99+" : item.badge}</span>
+                )}
               </Link>
             );
           })}
